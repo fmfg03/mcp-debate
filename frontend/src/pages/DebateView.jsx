@@ -130,6 +130,7 @@ const DebateView = () => {
           
           {/* Información del Debate */}
           
+{/* Información del Debate */}
 <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-6">
   <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
     Tema: {currentDebate.topic}
@@ -214,4 +215,3 @@ const DebateView = () => {
     </div>
   )}
 </div>
-          

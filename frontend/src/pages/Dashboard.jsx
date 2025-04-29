@@ -445,6 +445,16 @@ const ProjectView = () => {
       setShowNewConversationModal(false);
       setNewConversationTitle('');
       navigate(`/conversations/${result.payload.id}`);
+   createConversation({
+        projectId: id,
+        title: newConversationTitle || `Conversación ${new Date().toLocaleDateString()}`,
+        builderLlm: currentProject?.config?.builder_llm || 'claude',
+        judgeLlm: currentProject?.config?.judge_llm || 'chatgpt',
+      })
+    ).then((result) => {
+      setShowNewConversationModal(false);
+      setNewConversationTitle('');
+      navigate(`/conversations/${result.payload.id}`);
     });
   };
   
@@ -1065,7 +1075,581 @@ const Settings = () => {
                   </div>
                   
                   <div className="mb-4">
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">// frontend/src/pages/Dashboard.jsx
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={profileForm.email}
+                      disabled
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-400 sm:text-sm"
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      El email no se puede cambiar.
+                    </p>
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoading ? 'Guardando...' : 'Guardar'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            
+            {/* Claves API */}
+            <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center">
+                  <FiKey className="h-5 w-5 text-gray-400 mr-2" />
+                  <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+                    Claves API
+                  </h2>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <form onSubmit={handleUpdateApiKeys}>
+                  <div className="mb-4">
+                    <label htmlFor="claudeApiKey" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Claude API Key
+                    </label>
+                    <input
+                      type="password"
+                      id="claudeApiKey"
+                      name="claudeApiKey"
+                      value={apiKeysForm.claudeApiKey}
+                      onChange={handleApiKeysChange}
+                      placeholder={user?.api_keys?.claude ? '••••••••••••••' : 'No configurada'}
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-white"
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      Obtén tu clave API de Claude en{' '}
+                      <a
+                        href="https://www.anthropic.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        Anthropic
+                      </a>
+                    </p>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label htmlFor="chatgptApiKey" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      ChatGPT API Key
+                    </label>
+                    <input
+                      type="password"
+                      id="chatgptApiKey"
+                      name="chatgptApiKey"
+                      value={apiKeysForm.chatgptApiKey}
+                      onChange={handleApiKeysChange}
+                      placeholder={user?.api_keys?.chatgpt ? '••••••••••••••' : 'No configurada'}
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-white"
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      Obtén tu clave API de ChatGPT en{' '}
+                      <a
+                        href="https://platform.openai.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        OpenAI
+                      </a>
+                    </p>
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoading ? 'Guardando...' : 'Guardar'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            
+            {/* Preferencias de Apariencia */}
+            <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center">
+                  <FiSettings className="h-5 w-5 text-gray-400 mr-2" />
+                  <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+                    Preferencias
+                  </h2>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    {darkMode ? (
+                      <FiMoon className="h-5 w-5 text-gray-400 mr-2" />
+                    ) : (
+                      <FiSun className="h-5 w-5 text-gray-400 mr-2" />
+                    )}
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Modo Oscuro
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => dispatch(toggleDarkMode())}
+                    className={`
+                      relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer
+                      transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                      ${darkMode ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}
+                    `}
+                  >
+                    <span className="sr-only">Toggle dark mode</span>
+                    <span
+                      className={`
+                        pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200
+                        ${darkMode ? 'translate-x-5' : 'translate-x-0'}
+                      `}
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Settings;
+
+// frontend/src/pages/Login.jsx
+// Página de inicio de sesión
+
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, clearError } from '../store/slices/authSlice';
+import { Link, useNavigate } from 'react-router-dom';
+import { FiUser, FiLock } from 'react-icons/fi';
+
+const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated, isLoading, error } = useSelector((state) => state.auth);
+  
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+  
+  useEffect(() => {
+    // Limpiar errores previos
+    dispatch(clearError());
+    
+    // Redirigir si ya está autenticado
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate, dispatch]);
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await dispatch(login(formData)).unwrap();
+      navigate('/');
+    } catch (err) {
+      // Error manejado por redux
+    }
+  };
+  
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h1 className="text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+            MCP System
+          </h1>
+          <h2 className="mt-6 text-center text-2xl font-bold text-gray-900 dark:text-white">
+            Iniciar sesión
+          </h2>
+        </div>
+        
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900 p-4 rounded-md">
+            <div className="flex">
+              <div className="flex-grow">
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  {error}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Email
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiUser className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="appearance-none rounded-none relative block w-full pl-10 px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder="Email"
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Contraseña
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiLock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="appearance-none rounded-none relative block w-full pl-10 px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder="Contraseña"
+                />
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            </button>
+          </div>
+          
+          <div className="text-sm text-center">
+            <p className="text-gray-600 dark:text-gray-400">
+              ¿No tienes cuenta?{' '}
+              <Link
+                to="/register"
+                className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500"
+              >
+                Regístrate
+              </Link>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
+
+// frontend/src/pages/Register.jsx
+// Página de registro
+
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { register, clearError } from '../store/slices/authSlice';
+import { Link, useNavigate } from 'react-router-dom';
+import { FiUser, FiLock, FiMail } from 'react-icons/fi';
+
+const Register = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated, isLoading, error } = useSelector((state) => state.auth);
+  
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+  
+  const [formErrors, setFormErrors] = useState({});
+  
+  useEffect(() => {
+    // Limpiar errores previos
+    dispatch(clearError());
+    
+    // Redirigir si ya está autenticado
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate, dispatch]);
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    
+    // Limpiar error específico al cambiar un campo
+    if (formErrors[name]) {
+      setFormErrors({
+        ...formErrors,
+        [name]: '',
+      });
+    }
+  };
+  
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!formData.fullName.trim()) {
+      errors.fullName = 'El nombre es requerido';
+    }
+    
+    if (!formData.email.trim()) {
+      errors.email = 'El email es requerido';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Email inválido';
+    }
+    
+    if (!formData.password) {
+      errors.password = 'La contraseña es requerida';
+    } else if (formData.password.length < 6) {
+      errors.password = 'La contraseña debe tener al menos 6 caracteres';
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Las contraseñas no coinciden';
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    try {
+      await dispatch(
+        register({
+          fullName: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+        })
+      ).unwrap();
+      
+      // Redirigir al login después de un registro exitoso
+      navigate('/login', { 
+        state: { message: 'Registro exitoso. Por favor inicia sesión.' } 
+      });
+    } catch (err) {
+      // Error manejado por redux
+    }
+  };
+  
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h1 className="text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+            MCP System
+          </h1>
+          <h2 className="mt-6 text-center text-2xl font-bold text-gray-900 dark:text-white">
+            Crear una cuenta
+          </h2>
+        </div>
+        
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900 p-4 rounded-md">
+            <div className="flex">
+              <div className="flex-grow">
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  {error}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="fullName" className="sr-only">
+                Nombre completo
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiUser className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  autoComplete="name"
+                  required
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  className={`appearance-none rounded-none relative block w-full pl-10 px-3 py-2 border ${
+                    formErrors.fullName ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
+                  } placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
+                  placeholder="Nombre completo"
+                />
+              </div>
+              {formErrors.fullName && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                  {formErrors.fullName}
+                </p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Email
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiMail className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`appearance-none rounded-none relative block w-full pl-10 px-3 py-2 border ${
+                    formErrors.email ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
+                  } placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
+                  placeholder="Email"
+                />
+              </div>
+              {formErrors.email && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                  {formErrors.email}
+                </p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Contraseña
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiLock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`appearance-none rounded-none relative block w-full pl-10 px-3 py-2 border ${
+                    formErrors.password ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
+                  } placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
+                  placeholder="Contraseña"
+                />
+              </div>
+              {formErrors.password && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                  {formErrors.password}
+                </p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="confirmPassword" className="sr-only">
+                Confirmar Contraseña
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiLock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className={`appearance-none rounded-none relative block w-full pl-10 px-3 py-2 border ${
+                    formErrors.confirmPassword ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
+                  } placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
+                  placeholder="Confirmar contraseña"
+                />
+              </div>
+              {formErrors.confirmPassword && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                  {formErrors.confirmPassword}
+                </p>
+              )}
+            </div>
+          </div>
+          
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Registrando...' : 'Registrarse'}
+            </button>
+          </div>
+          
+          <div className="text-sm text-center">
+            <p className="text-gray-600 dark:text-gray-400">
+              ¿Ya tienes cuenta?{' '}
+              <Link
+                to="/login"
+                className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500"
+              >
+                Iniciar sesión
+              </Link>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Register;
+// frontend/src/pages/Dashboard.jsx
 // Página de dashboard principal
 
 import React, { useEffect } from 'react';

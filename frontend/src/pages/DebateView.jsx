@@ -129,6 +129,115 @@ const DebateView = () => {
           )}
           
           {/* Información del Debate */}
+// Dentro de ProjectView.jsx, después de la sección de Conversaciones
+
+{/* Debates */}
+<div className="bg-white dark:bg-gray-800 shadow rounded-lg mt-6">
+  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+    <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+      Debates
+    </h2>
+    <button
+      onClick={() => setShowNewDebateModal(true)}
+      className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+    >
+      <FiPlus className="-ml-0.5 mr-2 h-4 w-4" />
+      Nuevo Debate
+    </button>
+  </div>
+  
+  {debatesLoading ? (
+    <div className="p-6 text-center">
+      <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent dark:border-blue-400"></div>
+      <p className="mt-2 text-gray-500 dark:text-gray-400">Cargando debates...</p>
+    </div>
+  ) : debates.length > 0 ? (
+    <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+      {debates.map((debate) => (
+        <li key={debate.id}>
+          <Link
+            to={`/debates/${debate.id}`}
+            className="block hover:bg-gray-50 dark:hover:bg-gray-700"
+          >
+            <div className="px-6 py-4 flex items-center">
+              <div className="min-w-0 flex-1 flex items-center">
+                <div className="flex-shrink-0">
+                  <FiMessageSquare className="h-5 w-5 text-gray-400" />
+                </div>
+                <div className="min-w-0 flex-1 px-4">
+                  <div>
+                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400 truncate">
+                      {debate.title}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      {debate.topic.length > 100 ? debate.topic.substring(0, 100) + '...' : debate.topic}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="ml-3 flex-shrink-0">
+                <span
+                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                  ${
+                    debate.status === 'completed'
+                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                      : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                  }`}
+                >
+                  {debate.status === 'completed' ? 'Completado' : `Turno ${debate.current_turn} de ${debate.max_turns}`}
+                </span>
+              </div>
+            </div>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <div className="p-6 text-center">
+      <p className="text-gray-500 dark:text-gray-400 mb-4">
+        No hay debates en este proyecto.
+      </p>
+      <button
+        onClick={() => setShowNewDebateModal(true)}
+        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        <FiPlus className="-ml-1 mr-2 h-5 w-5" />
+        Crear un debate
+      </button>
+    </div>
+  )}
+</div>
+
+{/* Modal de nuevo debate */}
+{showNewDebateModal && (
+  <div className="fixed z-10 inset-0 overflow-y-auto">
+    <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+        <div className="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
+      </div>
+      
+      <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      
+      <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+            Nuevo Debate
+          </h3>
+          <div className="mt-4">
+            <CreateDebateForm 
+              projectId={currentProject.id}
+              onClose={() => setShowNewDebateModal(false)}
+              onSuccess={(debate) => {
+                setShowNewDebateModal(false);
+                navigate(`/debates/${debate.id}`);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
           
 {/* Información del Debate */}
 <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-6">

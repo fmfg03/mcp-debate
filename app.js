@@ -10,6 +10,8 @@ import authRoutes from './routes/authRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import conversationRoutes from './routes/conversationRoutes.js';
 import debateRoutes from './routes/debateRoutes.js';
+// En frontend/src/App.jsx, añadir:
+import DebateView from './pages/DebateView';
 
 import { initSocket } from './socket/init.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -35,6 +37,9 @@ app.use('/api/conversations', conversationRoutes);
 app.use('/api/debates', debateRoutes);
 
 app.use(errorHandler);
+
+// En las rutas protegidas:
+<Route path="/debates/:id" element={<PrivateRoute><DebateView /></PrivateRoute>} />
 
 const PORT = config.port || 4000;
 
